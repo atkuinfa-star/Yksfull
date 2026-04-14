@@ -1,0 +1,1342 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>YKS 2026 — Hazırlık Merkezi</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --bg2: #12121a;
+    --bg3: #1a1a26;
+    --card: #16161f;
+    --card2: #1e1e2e;
+    --border: #2a2a3e;
+    --accent: #6c63ff;
+    --accent2: #ff6584;
+    --accent3: #43e97b;
+    --accent4: #f7b731;
+    --text: #e8e8f0;
+    --text2: #9090b0;
+    --text3: #5a5a7a;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--bg); color:var(--text); font-family:'Space Grotesk',sans-serif; min-height:100vh; overflow-x:hidden; }
+
+  /* TOP BAR */
+  .topbar { display:flex; align-items:center; justify-content:space-between; padding:16px 28px; background:var(--bg2); border-bottom:1px solid var(--border); position:sticky; top:0; z-index:100; }
+  .logo { font-family:'Instrument Serif',serif; font-size:22px; color:var(--accent); font-style:italic; }
+  .logo span { color:var(--text2); font-style:normal; font-size:13px; font-family:'Space Grotesk',sans-serif; margin-left:8px; }
+  .countdown-box { text-align:center; }
+  .countdown-box .label { font-size:10px; color:var(--text3); text-transform:uppercase; letter-spacing:1px; }
+  .countdown-nums { display:flex; gap:8px; margin-top:2px; }
+  .cnum { background:var(--bg3); border:1px solid var(--border); border-radius:6px; padding:4px 10px; text-align:center; }
+  .cnum .n { font-size:20px; font-weight:700; color:var(--accent); line-height:1; }
+  .cnum .u { font-size:9px; color:var(--text3); }
+
+  /* NAV */
+  nav { display:flex; gap:4px; padding:12px 20px; background:var(--bg2); border-bottom:1px solid var(--border); overflow-x:auto; }
+  nav::-webkit-scrollbar { height:2px; } nav::-webkit-scrollbar-thumb { background:var(--border); }
+  .navbtn { padding:8px 16px; border:none; background:transparent; color:var(--text2); border-radius:8px; cursor:pointer; font-size:13px; font-family:'Space Grotesk',sans-serif; white-space:nowrap; transition:all .2s; }
+  .navbtn:hover { background:var(--bg3); color:var(--text); }
+  .navbtn.active { background:var(--accent); color:#fff; }
+
+  /* SECTIONS */
+  .section { display:none; padding:24px 20px; max-width:1100px; margin:0 auto; animation:fadeIn .3s; }
+  .section.active { display:block; }
+  @keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+
+  /* CARDS */
+  .card { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:20px; margin-bottom:16px; }
+  .card-title { font-size:16px; font-weight:600; margin-bottom:12px; color:var(--text); }
+
+  /* GRID */
+  .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .grid3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; }
+  @media(max-width:700px) { .grid2,.grid3 { grid-template-columns:1fr; } }
+
+  /* STAT BOXES */
+  .stat { background:var(--card2); border-radius:10px; padding:16px; text-align:center; }
+  .stat .val { font-size:32px; font-weight:700; }
+  .stat .lbl { font-size:11px; color:var(--text2); margin-top:4px; }
+
+  /* BUTTONS */
+  .btn { padding:10px 20px; border:none; border-radius:8px; cursor:pointer; font-family:'Space Grotesk',sans-serif; font-size:14px; font-weight:600; transition:all .2s; }
+  .btn-primary { background:var(--accent); color:#fff; }
+  .btn-primary:hover { background:#5b54e8; }
+  .btn-success { background:var(--accent3); color:#000; }
+  .btn-danger { background:var(--accent2); color:#fff; }
+  .btn-sm { padding:6px 14px; font-size:12px; }
+  .btn-outline { background:transparent; border:1px solid var(--border); color:var(--text2); }
+  .btn-outline:hover { border-color:var(--accent); color:var(--accent); }
+
+  /* INPUTS */
+  input, select, textarea { background:var(--bg3); border:1px solid var(--border); color:var(--text); border-radius:8px; padding:10px 14px; font-family:'Space Grotesk',sans-serif; font-size:14px; outline:none; transition:border .2s; }
+  input:focus, select:focus, textarea:focus { border-color:var(--accent); }
+  input[type=number] { width:80px; }
+  select { cursor:pointer; }
+  select option { background:var(--bg3); }
+
+  /* TOPIC SYSTEM */
+  .ders-folder { border:1px solid var(--border); border-radius:12px; overflow:hidden; margin-bottom:10px; }
+  .ders-header { display:flex; align-items:center; justify-content:space-between; padding:14px 18px; cursor:pointer; background:var(--card2); user-select:none; transition:background .2s; }
+  .ders-header:hover { background:var(--bg3); }
+  .ders-header-left { display:flex; align-items:center; gap:10px; }
+  .ders-icon { width:32px; height:32px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:16px; }
+  .ders-name { font-weight:600; font-size:15px; }
+  .ders-progress { font-size:12px; color:var(--text2); }
+  .ders-arrow { color:var(--text3); transition:transform .3s; font-size:18px; }
+  .ders-folder.open .ders-arrow { transform:rotate(90deg); }
+  .ders-body { display:none; padding:0 0 8px 0; }
+  .ders-folder.open .ders-body { display:block; }
+
+  .alt-ders-section { padding:8px 18px; }
+  .alt-ders-title { font-size:12px; text-transform:uppercase; letter-spacing:1px; color:var(--text3); margin:10px 0 6px 0; padding-left:4px; border-left:2px solid var(--border); }
+  .konu-item { display:flex; align-items:center; gap:10px; padding:8px 10px; border-radius:8px; cursor:pointer; transition:background .2s; }
+  .konu-item:hover { background:var(--bg3); }
+  .konu-check { width:20px; height:20px; border:2px solid var(--border); border-radius:5px; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:all .2s; }
+  .konu-check.done { background:var(--accent3); border-color:var(--accent3); }
+  .konu-check.done::after { content:'✓'; color:#000; font-size:12px; font-weight:700; }
+  .konu-text { font-size:13px; color:var(--text2); flex:1; }
+  .konu-item.done .konu-text { color:var(--text3); text-decoration:line-through; }
+  .prog-bar { height:4px; background:var(--bg3); border-radius:2px; margin-top:4px; overflow:hidden; }
+  .prog-fill { height:100%; border-radius:2px; transition:width .4s; }
+
+  /* DENEME */
+  .deneme-form { display:grid; gap:12px; }
+  .form-row { display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  .form-label { font-size:13px; color:var(--text2); min-width:160px; }
+  .net-inputs { display:flex; align-items:center; gap:6px; }
+  .net-inputs span { font-size:12px; color:var(--text3); }
+  .net-display { background:var(--bg3); border:1px solid var(--border); border-radius:6px; padding:6px 12px; min-width:60px; text-align:center; font-weight:700; color:var(--accent); font-size:14px; }
+  .deneme-list { margin-top:16px; }
+  .deneme-item { background:var(--bg3); border:1px solid var(--border); border-radius:10px; padding:14px; margin-bottom:8px; }
+  .deneme-item-top { display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
+  .deneme-item-name { font-weight:600; font-size:14px; }
+  .deneme-item-date { font-size:12px; color:var(--text3); }
+  .nets-display { display:flex; gap:10px; flex-wrap:wrap; }
+  .net-badge { background:var(--card); border:1px solid var(--border); border-radius:6px; padding:4px 10px; font-size:12px; }
+  .net-badge span { color:var(--accent); font-weight:700; }
+
+  /* ÇALIŞMA SÜRESİ */
+  .sure-form { display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-bottom:16px; }
+  .sure-list { margin-top:8px; }
+  .sure-item { display:flex; align-items:center; justify-content:space-between; padding:10px 14px; background:var(--bg3); border-radius:8px; margin-bottom:6px; }
+  .sure-item-left { display:flex; align-items:center; gap:10px; }
+  .sure-ders-tag { padding:3px 10px; border-radius:20px; font-size:11px; font-weight:600; }
+  .sure-time { font-size:13px; color:var(--text2); }
+  .daily-total { display:flex; justify-content:space-between; align-items:center; padding:12px 16px; background:var(--bg3); border:1px solid var(--accent); border-radius:10px; margin-bottom:12px; }
+  .daily-total .lbl { font-size:13px; color:var(--text2); }
+  .daily-total .val { font-size:20px; font-weight:700; color:var(--accent); }
+
+  /* ÜNİVERSİTE */
+  .uni-search-box { position:relative; margin-bottom:12px; }
+  .uni-search-box input { width:100%; }
+  .uni-dropdown { position:absolute; top:calc(100% + 4px); left:0; right:0; background:var(--card2); border:1px solid var(--border); border-radius:10px; max-height:220px; overflow-y:auto; z-index:50; display:none; }
+  .uni-dropdown.open { display:block; }
+  .uni-dropdown::-webkit-scrollbar { width:4px; } .uni-dropdown::-webkit-scrollbar-thumb { background:var(--border); }
+  .uni-option { padding:10px 14px; cursor:pointer; font-size:13px; transition:background .2s; border-bottom:1px solid var(--border); }
+  .uni-option:last-child { border-bottom:none; }
+  .uni-option:hover { background:var(--bg3); }
+  .bolum-list { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:8px; }
+  @media(max-width:600px) { .bolum-list { grid-template-columns:1fr; } }
+  .bolum-card { background:var(--bg3); border:1px solid var(--border); border-radius:8px; padding:12px; cursor:pointer; transition:all .2s; }
+  .bolum-card:hover, .bolum-card.selected { border-color:var(--accent); background:var(--card2); }
+  .bolum-card .bname { font-size:13px; font-weight:600; margin-bottom:4px; }
+  .bolum-card .bdetail { font-size:11px; color:var(--text3); }
+  .bolum-card .bsira { color:var(--accent4); font-weight:700; }
+  .hedef-saved { background:var(--bg3); border:1px solid var(--accent); border-radius:12px; padding:16px; margin-bottom:16px; display:none; }
+  .hedef-saved .h-uni { font-size:18px; font-weight:700; color:var(--accent); }
+  .hedef-saved .h-bolum { font-size:15px; color:var(--text); margin-top:4px; }
+  .hedef-saved .h-sira { color:var(--accent4); margin-top:4px; font-size:13px; }
+
+  /* MOTİVASYON */
+  .motivasyon-card { background:linear-gradient(135deg,var(--bg3) 0%,#1a0a2e 100%); border:1px solid #3a2a5e; border-radius:16px; padding:28px; text-align:center; margin-bottom:16px; }
+  .motivasyon-quote { font-family:'Instrument Serif',serif; font-size:22px; font-style:italic; color:var(--text); line-height:1.5; }
+  .motivasyon-author { font-size:13px; color:var(--text3); margin-top:12px; }
+  .quote-refresh { margin-top:16px; }
+
+  /* AI TAVSİYE */
+  .ai-box { background:linear-gradient(135deg,#0d0a1e 0%,#1a0a2e 100%); border:1px solid var(--accent); border-radius:14px; padding:20px; }
+  .ai-response { margin-top:14px; padding:14px; background:var(--bg2); border-radius:10px; font-size:14px; line-height:1.7; color:var(--text2); white-space:pre-wrap; min-height:60px; }
+  .ai-loading { color:var(--accent); font-size:13px; animation:pulse 1.2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+
+  /* PROGRESS DASHBOARD */
+  .prog-circle { position:relative; width:80px; height:80px; }
+  .prog-circle svg { transform:rotate(-90deg); }
+  .prog-circle .prog-text { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+  .prog-text .pct { font-size:18px; font-weight:700; }
+  .prog-text .plbl { font-size:9px; color:var(--text3); }
+  .prog-row { display:flex; align-items:center; gap:16px; padding:10px 0; border-bottom:1px solid var(--border); }
+  .prog-row:last-child { border-bottom:none; }
+  .prog-row-info { flex:1; }
+  .prog-row-name { font-size:14px; font-weight:600; }
+  .prog-row-sub { font-size:12px; color:var(--text2); margin-top:2px; }
+  .prog-row-pct { font-size:20px; font-weight:700; color:var(--accent); }
+
+  /* TABS within section */
+  .subtabs { display:flex; gap:4px; margin-bottom:16px; padding:4px; background:var(--bg3); border-radius:10px; width:fit-content; }
+  .subtab { padding:8px 20px; border:none; background:transparent; color:var(--text2); border-radius:8px; cursor:pointer; font-size:13px; font-family:'Space Grotesk',sans-serif; font-weight:500; transition:all .2s; }
+  .subtab.active { background:var(--accent); color:#fff; }
+
+  /* BADGE */
+  .badge { display:inline-block; padding:2px 8px; border-radius:20px; font-size:11px; font-weight:600; }
+  .badge-tyt { background:#1a3a5c; color:#60b8f0; }
+  .badge-ayt { background:#2a1a3c; color:#c060f0; }
+
+  /* TABLE */
+  table { width:100%; border-collapse:collapse; font-size:13px; }
+  th { background:var(--bg3); padding:10px 12px; text-align:left; color:var(--text2); font-weight:600; font-size:11px; text-transform:uppercase; letter-spacing:.5px; }
+  td { padding:10px 12px; border-bottom:1px solid var(--border); }
+  tr:last-child td { border-bottom:none; }
+  tr:hover td { background:var(--bg3); }
+
+  /* COLOR HELPERS */
+  .c-acc { color:var(--accent); }
+  .c-grn { color:var(--accent3); }
+  .c-red { color:var(--accent2); }
+  .c-yel { color:var(--accent4); }
+  .mt8 { margin-top:8px; } .mt12 { margin-top:12px; } .mt16 { margin-top:16px; }
+  .flex { display:flex; } .flex-center { align-items:center; } .gap8 { gap:8px; } .gap12 { gap:12px; }
+  .fw700 { font-weight:700; } .fs12 { font-size:12px; } .fs13 { font-size:13px; }
+
+  .section-title { font-family:'Instrument Serif',serif; font-size:26px; font-style:italic; margin-bottom:20px; color:var(--text); }
+  .section-title span { color:var(--accent); }
+  .divider { height:1px; background:var(--border); margin:16px 0; }
+
+  /* scrollbar */
+  ::-webkit-scrollbar { width:6px; height:6px; }
+  ::-webkit-scrollbar-track { background:var(--bg); }
+  ::-webkit-scrollbar-thumb { background:var(--border); border-radius:3px; }
+
+  .tip-row { background:var(--bg3); border-left:3px solid var(--accent); padding:10px 14px; border-radius:0 8px 8px 0; font-size:13px; color:var(--text2); margin-bottom:8px; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="logo">YKS 2026 <span>Hazırlık Merkezi</span></div>
+  <div class="countdown-box">
+    <div class="label">🎯 TYT'ye Kalan Süre</div>
+    <div class="countdown-nums">
+      <div class="cnum"><div class="n" id="cd-gun">--</div><div class="u">gün</div></div>
+      <div class="cnum"><div class="n" id="cd-saat">--</div><div class="u">saat</div></div>
+      <div class="cnum"><div class="n" id="cd-dak">--</div><div class="u">dak</div></div>
+      <div class="cnum"><div class="n" id="cd-sn">--</div><div class="u">sn</div></div>
+    </div>
+  </div>
+</div>
+
+<nav>
+  <button class="navbtn active" onclick="showSection('dashboard')">📊 Genel Bakış</button>
+  <button class="navbtn" onclick="showSection('konular')">📚 Konu Takip</button>
+  <button class="navbtn" onclick="showSection('deneme')">📝 Deneme Analizi</button>
+  <button class="navbtn" onclick="showSection('sure')">⏱ Çalışma Süresi</button>
+  <button class="navbtn" onclick="showSection('hedef')">🎓 Hedef Üniversite</button>
+  <button class="navbtn" onclick="showSection('motivasyon')">✨ Motivasyon</button>
+</nav>
+
+<!-- ============ DASHBOARD ============ -->
+<div id="sec-dashboard" class="section active">
+  <div class="section-title">Genel <span>Bakış</span></div>
+  <div class="grid3">
+    <div class="card">
+      <div class="card-title">Konu Tamamlama</div>
+      <div id="db-konu-stats"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Son Denemeler</div>
+      <div id="db-deneme-stats" style="font-size:13px;color:var(--text2);">Henüz deneme eklenmedi.</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Bugünkü Çalışma</div>
+      <div id="db-sure-stats" style="font-size:13px;color:var(--text2);">Henüz çalışma eklenmedi.</div>
+    </div>
+  </div>
+  <div class="card mt16">
+    <div class="card-title">Hedef Üniversite</div>
+    <div id="db-hedef">Hedef üniversite seçilmedi.</div>
+  </div>
+  <div class="card mt16" id="ai-dashboard-box" style="display:none;">
+    <div class="card-title">🤖 AI Çalışma Tavsiyesi</div>
+    <div id="db-ai-text" class="ai-response"></div>
+  </div>
+</div>
+
+<!-- ============ KONULAR ============ -->
+<div id="sec-konular" class="section">
+  <div class="section-title">Konu <span>Takip</span></div>
+  <div class="subtabs">
+    <button class="subtab active" onclick="showKonuTab('tyt')">📘 TYT</button>
+    <button class="subtab" onclick="showKonuTab('ayt')">📗 AYT Sayısal</button>
+  </div>
+  <div id="konu-tyt"></div>
+  <div id="konu-ayt" style="display:none;"></div>
+</div>
+
+<!-- ============ DENEME ============ -->
+<div id="sec-deneme" class="section">
+  <div class="section-title">Deneme <span>Analizi</span></div>
+  <div class="card">
+    <div class="card-title">Yeni Deneme Ekle</div>
+    <div class="deneme-form">
+      <div class="form-row">
+        <span class="form-label">Deneme Adı</span>
+        <input type="text" id="dn-ad" placeholder="ör: TYT Denemesi #1" style="flex:1;min-width:180px;">
+        <input type="date" id="dn-tarih" style="width:160px;">
+      </div>
+      <div class="divider" style="margin:4px 0;"></div>
+      <div style="font-size:12px;color:var(--text3);margin-bottom:4px;">TYT Netleri</div>
+      <div class="form-row">
+        <span class="form-label">Türkçe (40 soru)</span>
+        <div class="net-inputs">
+          <input type="number" id="tyt-tr-d" placeholder="D" min="0" max="40" oninput="calcNet('tyt-tr')">
+          <span>doğru</span>
+          <input type="number" id="tyt-tr-y" placeholder="Y" min="0" max="40" oninput="calcNet('tyt-tr')">
+          <span>yanlış</span>
+          <div class="net-display" id="tyt-tr-net">—</div>
+        </div>
+      </div>
+      <div class="form-row">
+        <span class="form-label">Temel Mat. (40 soru)</span>
+        <div class="net-inputs">
+          <input type="number" id="tyt-mat-d" placeholder="D" min="0" max="40" oninput="calcNet('tyt-mat')">
+          <span>doğru</span>
+          <input type="number" id="tyt-mat-y" placeholder="Y" min="0" max="40" oninput="calcNet('tyt-mat')">
+          <span>yanlış</span>
+          <div class="net-display" id="tyt-mat-net">—</div>
+        </div>
+      </div>
+      <div class="form-row">
+        <span class="form-label">Sosyal Bil. (20 soru)</span>
+        <div class="net-inputs">
+          <input type="number" id="tyt-sos-d" placeholder="D" min="0" max="20" oninput="calcNet('tyt-sos')">
+          <span>doğru</span>
+          <input type="number" id="tyt-sos-y" placeholder="Y" min="0" max="20" oninput="calcNet('tyt-sos')">
+          <span>yanlış</span>
+          <div class="net-display" id="tyt-sos-net">—</div>
+        </div>
+      </div>
+      <div class="form-row">
+        <span class="form-label">Fen Bilimleri (20 soru)</span>
+        <div class="net-inputs">
+          <input type="number" id="tyt-fen-d" placeholder="D" min="0" max="20" oninput="calcNet('tyt-fen')">
+          <span>doğru</span>
+          <input type="number" id="tyt-fen-y" placeholder="Y" min="0" max="20" oninput="calcNet('tyt-fen')">
+          <span>yanlış</span>
+          <div class="net-display" id="tyt-fen-net">—</div>
+        </div>
+      </div>
+      <div class="divider" style="margin:4px 0;"></div>
+      <div style="font-size:12px;color:var(--text3);margin-bottom:4px;">AYT Sayısal Netleri (İsteğe Bağlı)</div>
+      <div class="form-row">
+        <span class="form-label">Matematik (40 soru)</span>
+        <div class="net-inputs">
+          <input type="number" id="ayt-mat-d" placeholder="D" min="0" max="40" oninput="calcNet('ayt-mat')">
+          <span>doğru</span>
+          <input type="number" id="ayt-mat-y" placeholder="Y" min="0" max="40" oninput="calcNet('ayt-mat')">
+          <span>yanlış</span>
+          <div class="net-display" id="ayt-mat-net">—</div>
+        </div>
+      </div>
+      <div class="form-row">
+        <span class="form-label">Fizik (14 soru)</span>
+        <div class="net-inputs">
+          <input type="number" id="ayt-fiz-d" placeholder="D" min="0" max="14" oninput="calcNet('ayt-fiz')">
+          <span>doğru</span>
+          <input type="number" id="ayt-fiz-y" placeholder="Y" min="0" max="14" oninput="calcNet('ayt-fiz')">
+          <span>yanlış</span>
+          <div class="net-display" id="ayt-fiz-net">—</div>
+        </div>
+      </div>
+      <div class="form-row">
+        <span class="form-label">Kimya (13 soru)</span>
+        <div class="net-inputs">
+          <input type="number" id="ayt-kim-d" placeholder="D" min="0" max="13" oninput="calcNet('ayt-kim')">
+          <span>doğru</span>
+          <input type="number" id="ayt-kim-y" placeholder="Y" min="0" max="13" oninput="calcNet('ayt-kim')">
+          <span>yanlış</span>
+          <div class="net-display" id="ayt-kim-net">—</div>
+        </div>
+      </div>
+      <div class="form-row">
+        <span class="form-label">Biyoloji (13 soru)</span>
+        <div class="net-inputs">
+          <input type="number" id="ayt-bio-d" placeholder="D" min="0" max="13" oninput="calcNet('ayt-bio')">
+          <span>doğru</span>
+          <input type="number" id="ayt-bio-y" placeholder="Y" min="0" max="13" oninput="calcNet('ayt-bio')">
+          <span>yanlış</span>
+          <div class="net-display" id="ayt-bio-net">—</div>
+        </div>
+      </div>
+      <div class="form-row">
+        <span class="form-label">Geometri (10 soru)</span>
+        <div class="net-inputs">
+          <input type="number" id="ayt-geo-d" placeholder="D" min="0" max="10" oninput="calcNet('ayt-geo')">
+          <span>doğru</span>
+          <input type="number" id="ayt-geo-y" placeholder="Y" min="0" max="10" oninput="calcNet('ayt-geo')">
+          <span>yanlış</span>
+          <div class="net-display" id="ayt-geo-net">—</div>
+        </div>
+      </div>
+      <button class="btn btn-primary mt12" onclick="saveDeneme()">💾 Denemeyi Kaydet</button>
+    </div>
+  </div>
+  <div id="deneme-list-container"></div>
+  <!-- AI TAVSİYE -->
+  <div class="card mt16">
+    <div class="card-title">🤖 AI Deneme Analizi ve Tavsiye</div>
+    <div class="ai-box">
+      <div style="font-size:13px;color:var(--text2);">Son deneme netlerinize göre yapay zeka analizi alın. Hangi konulara odaklanmanız gerektiğini ve çalışma stratejinizi öğrenin.</div>
+      <button class="btn btn-primary mt12" onclick="getAIAdvice()">🧠 AI'dan Tavsiye Al</button>
+      <div id="ai-response" class="ai-response" style="display:none;"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ ÇALIŞMA SÜRESİ ============ -->
+<div id="sec-sure" class="section">
+  <div class="section-title">Çalışma <span>Süresi</span></div>
+  <div class="card">
+    <div class="daily-total">
+      <div>
+        <div class="lbl">Bugün Toplam Çalışma</div>
+        <div class="val" id="daily-total-text">0 saat 0 dk</div>
+      </div>
+      <div style="font-size:24px;">📅</div>
+    </div>
+    <div class="card-title">Yeni Çalışma Ekle</div>
+    <div class="sure-form">
+      <select id="sure-ders" style="min-width:180px;">
+        <option value="">Ders Seçin</option>
+        <option value="TYT Türkçe">📘 TYT Türkçe</option>
+        <option value="TYT Matematik">📘 TYT Matematik</option>
+        <option value="TYT Sosyal Bilimler">📘 TYT Sosyal Bilimler</option>
+        <option value="TYT Fen Bilimleri">📘 TYT Fen Bilimleri</option>
+        <option value="AYT Matematik">📗 AYT Matematik</option>
+        <option value="AYT Geometri">📗 AYT Geometri</option>
+        <option value="AYT Fizik">📗 AYT Fizik</option>
+        <option value="AYT Kimya">📗 AYT Kimya</option>
+        <option value="AYT Biyoloji">📗 AYT Biyoloji</option>
+      </select>
+      <input type="number" id="sure-saat" placeholder="Saat" min="0" max="24" style="width:80px;">
+      <input type="number" id="sure-dak" placeholder="Dakika" min="0" max="59" style="width:90px;">
+      <input type="text" id="sure-not" placeholder="Not (isteğe bağlı)" style="flex:1;min-width:120px;">
+      <button class="btn btn-primary" onclick="addSure()">+ Ekle</button>
+    </div>
+    <div class="sure-list" id="sure-list"></div>
+  </div>
+  <div class="card mt16">
+    <div class="card-title">Haftalık Özet</div>
+    <div id="haftalik-ozet" style="font-size:13px;color:var(--text2);"></div>
+  </div>
+</div>
+
+<!-- ============ HEDEF ÜNİVERSİTE ============ -->
+<div id="sec-hedef" class="section">
+  <div class="section-title">Hedef <span>Üniversite</span></div>
+  <div class="hedef-saved" id="hedef-saved-box">
+    <div style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Hedefin</div>
+    <div class="h-uni" id="hs-uni"></div>
+    <div class="h-bolum" id="hs-bolum"></div>
+    <div class="h-sira" id="hs-sira"></div>
+    <button class="btn btn-outline btn-sm mt12" onclick="clearHedef()">× Hedefi Değiştir</button>
+  </div>
+  <div id="hedef-form-box">
+    <div class="card">
+      <div class="card-title">Üniversite Seçimi</div>
+      <div class="uni-search-box">
+        <input type="text" id="uni-search" placeholder="Üniversite adı yazın..." oninput="filterUni()" onblur="setTimeout(()=>closeDropdown(),200)" style="width:100%;">
+        <div class="uni-dropdown" id="uni-dropdown"></div>
+      </div>
+      <div id="selected-uni-label" style="font-size:13px;color:var(--accent);margin-top:4px;min-height:18px;"></div>
+    </div>
+    <div class="card mt16" id="bolum-card-box" style="display:none;">
+      <div class="card-title">Bölüm Seçimi — <span id="uni-bolum-title" style="color:var(--text2);font-weight:400;font-size:14px;"></span></div>
+      <div class="bolum-list" id="bolum-list"></div>
+    </div>
+    <button class="btn btn-success mt16" onclick="saveHedef()" id="save-hedef-btn" style="display:none;">💾 Hedefi Kaydet</button>
+  </div>
+</div>
+
+<!-- ============ MOTİVASYON ============ -->
+<div id="sec-motivasyon" class="section">
+  <div class="section-title">Motivasyon & <span>Güç</span></div>
+  <div class="motivasyon-card" id="mot-card">
+    <div class="motivasyon-quote" id="mot-quote"></div>
+    <div class="motivasyon-author" id="mot-author"></div>
+    <button class="btn btn-outline btn-sm quote-refresh" onclick="newQuote()">↻ Yeni Söz</button>
+  </div>
+  <div class="grid2">
+    <div class="card">
+      <div class="card-title">📅 Sınava Kadar</div>
+      <div id="mot-countdown" style="font-size:14px;color:var(--text2);line-height:1.8;"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">💪 Günlük Hatırlatmalar</div>
+      <div id="mot-tips"></div>
+    </div>
+  </div>
+  <div class="card mt16">
+    <div class="card-title">🤖 Kişisel Motivasyon Mesajı</div>
+    <div class="ai-box">
+      <div style="font-size:13px;color:var(--text2);">İlerleme durumuna ve hedefine göre sana özel motivasyon mesajı alabilirsin.</div>
+      <button class="btn btn-primary mt12" onclick="getMotivasyon()">✨ Mesaj Al</button>
+      <div id="mot-ai-response" class="ai-response" style="display:none;"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ==================== DATA ====================
+const TOPICS = {
+  tyt: [
+    {
+      id:'tyt-turkce', name:'Türkçe', icon:'📖', color:'#3b82f6',
+      konular:[
+        'Sözcükte Anlam','Cümlede Anlam','Paragraf','Sözcük Türleri','Fiil','Cümle Türleri',
+        'Yazım Kuralları','Noktalama İşaretleri','Ses Bilgisi','Yapı Bilgisi','Anlatım Bozuklukları',
+        'Dil Bilgisi','Sözcük Grupları','Cümle Öğeleri','Edebî Türler'
+      ]
+    },
+    {
+      id:'tyt-mat', name:'Temel Matematik', icon:'🔢', color:'#f59e0b',
+      konular:[
+        'Sayı Sistemleri','Bölünebilme Kuralları','EBOB EKOK','Kesirler','Ondalıklı Sayılar',
+        'Rasyonel Sayılar','İrrasyonel Sayılar','Mutlak Değer','Üslü Sayılar','Köklü Sayılar',
+        'Çarpanlara Ayırma','Oran-Orantı','Yüzde ve Faiz','Denklemler','Eşitsizlikler',
+        'Küme Teorisi','Fonksiyonlar','Permütasyon-Kombinasyon','Olasılık',
+        'İstatistik (Ortalama, Medyan)','Sayı Problemleri','Hız-Yol-Zaman','Havuz Problemleri',
+        'Geometriye Giriş (TYT)'
+      ]
+    },
+    {
+      id:'tyt-sosyal', name:'Sosyal Bilimler', icon:'🌍', color:'#10b981',
+      konular:[
+        'Tarih: Tarih Bilimine Giriş','Tarih: İlk Çağ Uygarlıkları','Tarih: İslam Tarihi',
+        'Tarih: Türk-İslam Devletleri','Tarih: Osmanlı Kuruluş-Yükseliş','Tarih: Osmanlı Duraklama-Gerileme',
+        'Tarih: Yakın Çağ','Tarih: Kurtuluş Savaşı','Tarih: Türkiye Cumhuriyeti',
+        'Coğrafya: Harita Bilgisi','Coğrafya: İklim ve Vejetasyon','Coğrafya: Nüfus',
+        'Coğrafya: Yerleşme','Coğrafya: Türkiye Coğrafyası',
+        'Felsefe: Felsefeye Giriş','Felsefe: Varlık Felsefesi','Felsefe: Bilgi Felsefesi',
+        'Din Kültürü: İslam ve İbadet'
+      ]
+    },
+    {
+      id:'tyt-fen', name:'Fen Bilimleri', icon:'🔬', color:'#8b5cf6',
+      konular:[
+        'Fizik: Kuvvet ve Hareket','Fizik: Enerji','Fizik: Isı ve Sıcaklık',
+        'Fizik: Elektrik','Fizik: Dalgalar ve Ses','Fizik: Optik',
+        'Kimya: Atom Yapısı','Kimya: Periyodik Sistem','Kimya: Kimyasal Bağlar',
+        'Kimya: Mol Kavramı','Kimya: Kimyasal Tepkimeler','Kimya: Asit-Baz',
+        'Biyoloji: Hücre','Biyoloji: Canlıların Sınıflandırılması','Biyoloji: Sindirim Sistemi',
+        'Biyoloji: Dolaşım Sistemi','Biyoloji: Solunum Sistemi','Biyoloji: Boşaltım Sistemi',
+        'Biyoloji: Ekosistem','Biyoloji: Genetik Temeller'
+      ]
+    }
+  ],
+  ayt: [
+    {
+      id:'ayt-mat', name:'Matematik', icon:'📐', color:'#f59e0b',
+      konular:[
+        'Sayılar ve Cebir','Denklemler ve Eşitsizlikler','Mutlak Değer','Üslü ve Köklü İfadeler',
+        'Rasyonel İfadeler','Fonksiyonlar','2.Dereceden Denklemler','Karmaşık Sayılar',
+        'Logaritma','Trigonometri: Açı ve Ölçüsü','Trigonometri: Trigonometrik Fonksiyonlar',
+        'Trigonometri: Sinüs-Kosinüs Teoremleri','Sayı Dizileri','Aritmetik Dizi','Geometrik Dizi',
+        'Permütasyon-Kombinasyon','Binom Teoremi','Olasılık','İstatistik',
+        'Limit','Türev: Tanım ve Kurallar','Türev Uygulamaları','İntegral: Belirsiz',
+        'İntegral: Belirli','Alan Hesabı'
+      ]
+    },
+    {
+      id:'ayt-geo', name:'Geometri', icon:'📏', color:'#ec4899',
+      konular:[
+        'Temel Kavramlar','Üçgenler: Açı Kenar Bağıntısı','Üçgenlerde Eşlik ve Benzerlik',
+        'Üçgenlerde Alan','Özel Üçgenler','Dörtgenler','Paralelkenar ve Özellikleri',
+        'Dikdörtgen-Kare-Eşkenar Dörtgen','Yamuk','Çokgenler','Çember ve Daire',
+        'Çemberde Açılar','Çemberde Kiriş-Teğet','Katı Cisimler','Dönme Cisimleri',
+        'Koordinat Geometri: Doğru','Koordinat Geometri: Çember','Analitik Geometri: Elips-Hiperbol-Parabol',
+        'Vektörler','Dönüşüm Geometrisi'
+      ]
+    },
+    {
+      id:'ayt-fiz', name:'Fizik', icon:'⚛️', color:'#06b6d4',
+      konular:[
+        'Kuvvet ve Hareket: Kinematik','Kuvvet ve Hareket: Dinamik','Newton Kanunları',
+        'Sürtünme Kuvveti','İş-Enerji-Güç','Momentum ve İmpuls','Dairesel Hareket',
+        'Basit Harmonik Hareket','Kütle Çekimi','Elektrostatik','Elektrik Alanı',
+        'Potansiyel ve Enerji','Elektrik Devre Elemanları','Ohm Kanunu','Kirchhoff Kanunları',
+        'Kondansatörler','Manyetik Alan','Elektromanyetik İndüksiyon','Alternatif Akım',
+        'Geometrik Optik','Dalga Optiği','Modern Fizik: Fotoelektrik','Radyoaktivite','Nükleer Fizik'
+      ]
+    },
+    {
+      id:'ayt-kim', name:'Kimya', icon:'🧪', color:'#22c55e',
+      konular:[
+        'Maddenin Yapısı','Atom Teorileri','Periyodik Sistem','Kimyasal Bağlar (İyonik-Kovalent)',
+        'Metalik ve Hidrojen Bağı','Mol Kavramı','Kimyasal Tepkime Denklemleri',
+        'Stokiyometri','Gaz Kanunları','Çözeltiler','Asit-Baz Teorileri','pH Hesapları',
+        'Tampon Çözeltiler','Çözünürlük Çarpımı','Kimyasal Denge','Le Chatelier İlkesi',
+        'Elektrokimya','Redoks Tepkimeleri','Organik Kimya: Fonksiyonel Gruplar',
+        'Alkanlar-Alkenler-Alkinler','Aromatik Bileşikler','Alkoller ve Eterler',
+        'Aldehitler ve Ketonlar','Karboksilik Asitler','Esterler','Aminler','Polimerler'
+      ]
+    },
+    {
+      id:'ayt-bio', name:'Biyoloji', icon:'🧬', color:'#a3e635',
+      konular:[
+        'Hücre Biyolojisi: Prokaryot-Ökaryot','Hücre Organelleri','Hücre Zarı ve Taşıma',
+        'Fotosentez: Işık Tepkimeleri','Fotosentez: Karbon Döngüsü','Hücresel Solunum: Glikoliz',
+        'Hücresel Solunum: Krebs','Hücresel Solunum: Oksidatif Fosforilasyon',
+        'Hücre Bölünmesi: Mitoz','Hücre Bölünmesi: Mayoz','Üreme Sistemi',
+        'Embriyo Gelişimi','Sinir Sistemi','Duyu Organları','Destek ve Hareket',
+        'Dolaşım Sistemi','Bağışıklık Sistemi','Solunum Sistemi','Boşaltım Sistemi',
+        'Hormonal Sistem','Sindirim Sistemi',
+        'Kalıtım: Mendel Kanunları','Kalıtım: Kan Grupları','Kalıtım: Eşeye Bağlı',
+        'Kalıtım: Poligen','DNA Yapısı ve Replikasyon','Transkripsiyon ve Translasyon',
+        'Gen Ekspresyonu','Mutasyon ve Modifikasyon','Popülasyon Genetiği',
+        'Evrim: Doğal Seçilim','Canlıların Sınıflandırılması','Ekosistem Ekolojisi',
+        'Biyom ve Biyosfer','Madde Döngüleri','Biyoteknoloji'
+      ]
+    }
+  ]
+};
+
+const MOTIVASYON_SOZLERI = [
+  {q:"Başarı, her gün tekrarlanan küçük çabaların toplamıdır.", a:"Robert Collier"},
+  {q:"Zor olan pes etmek, kolay olan devam etmek değil. Asıl zorluk, devam etmenin değerini bilmektir.", a:""},
+  {q:"Hayallerini ciddiye al, çünkü aileni ciddiye alıyorsun.", a:""},
+  {q:"Bu gün çalışmak, yarın seçim hakkı kazanmaktır.", a:""},
+  {q:"Matematik formülleri gibi: doğru uygulan, doğru sonuç.", a:""},
+  {q:"Her sabah uyandığında 67 gün daha kaldı. Her akşam yatarken bir gün daha geçti. Seçim senin.", a:""},
+  {q:"Başarı kapısı kilitli değil, sadece içten açılıyor.", a:""},
+  {q:"Ailenin sana güvenmesi tesadüf değil, senin karakterinin yansıması.", a:""},
+  {q:"Yorulmak normal, bırakmak değil.", a:""},
+  {q:"Her doğru cevap, hedefe bir adım daha yakın.", a:""},
+  {q:"Bugünün çalışması, yarının özgürlüğüdür.", a:""},
+  {q:"İlerleme her zaman görünmez; bir gün bakarsın, çok yol almışsın.", a:""},
+  {q:"Sınav günü ne kadar çalıştığını hatırlayacaksın. Çalış ki güzel hatırlayasın.", a:""},
+  {q:"En büyük motivasyon: 'Ben bunu başarabilirim'.", a:""},
+  {q:"Farkın, bırakmadığın günlerde gizli.", a:""}
+];
+
+const GUNLUK_IPUCLARI = [
+  "Pomodoro tekniği: 25 dk çalış, 5 dk mola.",
+  "Sabah uyandığında ilk 30 dk telefona bakma.",
+  "Günde en az 1 konu tamamla — küçük olsa da.",
+  "Her deneme sonrası yanlışlarını mutlaka gözden geçir.",
+  "Su için! Beyin dehidrasyon olduğunda %20 daha az verimli çalışır.",
+  "Gece 11'den sonra çalışmak verimini düşürür, erken uyu.",
+  "Konuyu öğrendikten sonra birinin olmadığını varsayarak anlat.",
+  "Hedef bölümünün 2025 sıralamasını düzenli kontrol et.",
+  "Sosyal medyadan uzak dur, en az sınav kadar önemli.",
+  "Her hafta bir 'deneme günü' belirle ve şartları gerçek gibi kur."
+];
+
+// ÜNIVERSITE & BOLUM DATA (2025 YKS Sayısal - SAY puan türü)
+const UNI_DATA = {
+  "Boğaziçi Üniversitesi": {
+    bolumler: [
+      {ad:"Bilgisayar Mühendisliği", tur:"SAY", taban_puan:524.3, taban_sira:1200},
+      {ad:"Elektrik-Elektronik Müh.", tur:"SAY", taban_puan:520.1, taban_sira:1450},
+      {ad:"Makine Mühendisliği", tur:"SAY", taban_puan:514.8, taban_sira:1890},
+      {ad:"Endüstri Mühendisliği", tur:"SAY", taban_puan:517.2, taban_sira:1650},
+      {ad:"İnşaat Mühendisliği", tur:"SAY", taban_puan:508.5, taban_sira:2400},
+      {ad:"Kimya Mühendisliği", tur:"SAY", taban_puan:505.9, taban_sira:2750},
+      {ad:"Fizik", tur:"SAY", taban_puan:487.3, taban_sira:5200},
+      {ad:"Kimya", tur:"SAY", taban_puan:481.5, taban_sira:6100},
+      {ad:"Matematik", tur:"SAY", taban_puan:483.7, taban_sira:5800},
+      {ad:"Tıp (İngilizce)", tur:"SAY", taban_puan:521.8, taban_sira:1300}
+    ]
+  },
+  "Orta Doğu Teknik Üniversitesi (ODTÜ)": {
+    bolumler: [
+      {ad:"Bilgisayar Mühendisliği", tur:"SAY", taban_puan:522.5, taban_sira:1320},
+      {ad:"Elektrik-Elektronik Müh.", tur:"SAY", taban_puan:518.7, taban_sira:1580},
+      {ad:"Makine Mühendisliği", tur:"SAY", taban_puan:511.2, taban_sira:2100},
+      {ad:"İnşaat Mühendisliği", tur:"SAY", taban_puan:505.4, taban_sira:2800},
+      {ad:"Havacılık ve Uzay Müh.", tur:"SAY", taban_puan:515.9, taban_sira:1780},
+      {ad:"Endüstri Mühendisliği", tur:"SAY", taban_puan:514.1, taban_sira:1900},
+      {ad:"Kimya Mühendisliği", tur:"SAY", taban_puan:503.8, taban_sira:3100},
+      {ad:"Fizik", tur:"SAY", taban_puan:485.1, taban_sira:5500},
+      {ad:"Matematik", tur:"SAY", taban_puan:482.4, taban_sira:6200}
+    ]
+  },
+  "İstanbul Teknik Üniversitesi (İTÜ)": {
+    bolumler: [
+      {ad:"Bilgisayar Mühendisliği", tur:"SAY", taban_puan:519.8, taban_sira:1480},
+      {ad:"Elektrik-Elektronik Müh.", tur:"SAY", taban_puan:515.3, taban_sira:1820},
+      {ad:"Makine Mühendisliği", tur:"SAY", taban_puan:509.6, taban_sira:2300},
+      {ad:"İnşaat Mühendisliği", tur:"SAY", taban_puan:503.1, taban_sira:3200},
+      {ad:"Kimya Mühendisliği", tur:"SAY", taban_puan:501.4, taban_sira:3500},
+      {ad:"Gemi İnşaatı ve Denizcilik", tur:"SAY", taban_puan:487.2, taban_sira:5300},
+      {ad:"Uçak Mühendisliği", tur:"SAY", taban_puan:512.7, taban_sira:2000},
+      {ad:"Fizik Mühendisliği", tur:"SAY", taban_puan:490.5, taban_sira:4800},
+      {ad:"Matematik Mühendisliği", tur:"SAY", taban_puan:492.3, taban_sira:4500}
+    ]
+  },
+  "Hacettepe Üniversitesi": {
+    bolumler: [
+      {ad:"Tıp", tur:"SAY", taban_puan:519.4, taban_sira:1510},
+      {ad:"Eczacılık", tur:"SAY", taban_puan:504.7, taban_sira:2950},
+      {ad:"Diş Hekimliği", tur:"SAY", taban_puan:510.2, taban_sira:2150},
+      {ad:"Bilgisayar Mühendisliği", tur:"SAY", taban_puan:503.6, taban_sira:3150},
+      {ad:"Elektrik-Elektronik Müh.", tur:"SAY", taban_puan:498.4, taban_sira:3800},
+      {ad:"Fizik", tur:"SAY", taban_puan:477.1, taban_sira:7400},
+      {ad:"Kimya", tur:"SAY", taban_puan:473.9, taban_sira:8200},
+      {ad:"Biyoloji", tur:"SAY", taban_puan:470.6, taban_sira:9000},
+      {ad:"Hemşirelik", tur:"SAY", taban_puan:441.3, taban_sira:18500}
+    ]
+  },
+  "İstanbul Üniversitesi": {
+    bolumler: [
+      {ad:"Tıp", tur:"SAY", taban_puan:513.8, taban_sira:1950},
+      {ad:"Eczacılık", tur:"SAY", taban_puan:496.2, taban_sira:4100},
+      {ad:"Diş Hekimliği", tur:"SAY", taban_puan:502.5, taban_sira:3350},
+      {ad:"Bilgisayar Mühendisliği", tur:"SAY", taban_puan:490.1, taban_sira:4850},
+      {ad:"Fizik", tur:"SAY", taban_puan:461.2, taban_sira:12400},
+      {ad:"Kimya", tur:"SAY", taban_puan:458.7, taban_sira:13100},
+      {ad:"Biyoloji", tur:"SAY", taban_puan:455.4, taban_sira:14200}
+    ]
+  },
+  "Ankara Üniversitesi": {
+    bolumler: [
+      {ad:"Tıp", tur:"SAY", taban_puan:515.1, taban_sira:1850},
+      {ad:"Eczacılık", tur:"SAY", taban_puan:495.8, taban_sira:4200},
+      {ad:"Diş Hekimliği", tur:"SAY", taban_puan:501.3, taban_sira:3450},
+      {ad:"Bilgisayar Mühendisliği", tur:"SAY", taban_puan:488.6, taban_sira:5100},
+      {ad:"Elektrik-Elektronik Müh.", tur:"SAY", taban_puan:483.2, taban_sira:6000},
+      {ad:"Fizik", tur:"SAY", taban_puan:459.8, taban_sira:12900},
+      {ad:"Kimya", tur:"SAY", taban_puan:456.4, taban_sira:13800}
+    ]
+  },
+  "Ege Üniversitesi": {
+    bolumler: [
+      {ad:"Tıp", tur:"SAY", taban_puan:512.4, taban_sira:2050},
+      {ad:"Eczacılık", tur:"SAY", taban_puan:492.3, taban_sira:4600},
+      {ad:"Bilgisayar Mühendisliği", tur:"SAY", taban_puan:484.7, taban_sira:5800},
+      {ad:"Fizik", tur:"SAY", taban_puan:455.9, taban_sira:14500}
+    ]
+  },
+  "Dokuz Eylül Üniversitesi": {
+    bolumler: [
+      {ad:"Tıp", tur:"SAY", taban_puan:510.7, taban_sira:2180},
+      {ad:"Bilgisayar Mühendisliği", tur:"SAY", taban_puan:480.3, taban_sira:6800},
+      {ad:"İnşaat Mühendisliği", tur:"SAY", taban_puan:469.8, taban_sira:9600}
+    ]
+  },
+  "Gazi Üniversitesi": {
+    bolumler: [
+      {ad:"Tıp", tur:"SAY", taban_puan:511.9, taban_sira:2100},
+      {ad:"Diş Hekimliği", tur:"SAY", taban_puan:498.7, taban_sira:3750},
+      {ad:"Bilgisayar Mühendisliği", tur:"SAY", taban_puan:481.5, taban_sira:6600},
+      {ad:"Elektrik-Elektronik Müh.", tur:"SAY", taban_puan:476.2, taban_sira:7600}
+    ]
+  },
+  "Selçuk Üniversitesi": {
+    bolumler: [
+      {ad:"Tıp", tur:"SAY", taban_puan:499.3, taban_sira:3650},
+      {ad:"Bilgisayar Mühendisliği", tur:"SAY", taban_puan:467.8, taban_sira:10200}
+    ]
+  },
+  "Marmara Üniversitesi": {
+    bolumler: [
+      {ad:"Tıp", tur:"SAY", taban_puan:514.5, taban_sira:1870},
+      {ad:"Eczacılık", tur:"SAY", taban_puan:493.7, taban_sira:4400},
+      {ad:"Bilgisayar Mühendisliği", tur:"SAY", taban_puan:486.2, taban_sira:5400},
+      {ad:"Elektrik-Elektronik Müh.", tur:"SAY", taban_puan:481.4, taban_sira:6500},
+      {ad:"Makine Mühendisliği", tur:"SAY", taban_puan:477.8, taban_sira:7300}
+    ]
+  },
+  "Koç Üniversitesi": {
+    bolumler: [
+      {ad:"Tıp (İngilizce)", tur:"SAY", taban_puan:518.3, taban_sira:1600},
+      {ad:"Bilgisayar Mühendisliği (İng.)", tur:"SAY", taban_puan:516.7, taban_sira:1750},
+      {ad:"Elektrik-Elektronik Müh. (İng.)", tur:"SAY", taban_puan:513.4, taban_sira:1980},
+      {ad:"Makine Mühendisliği (İng.)", tur:"SAY", taban_puan:509.8, taban_sira:2280},
+      {ad:"Kimya Mühendisliği (İng.)", tur:"SAY", taban_puan:505.1, taban_sira:2820}
+    ]
+  },
+  "Sabancı Üniversitesi": {
+    bolumler: [
+      {ad:"Mühendislik ve Doğa Bilimleri (İng.)", tur:"SAY", taban_puan:514.2, taban_sira:1920},
+      {ad:"Bilgisayar Bilimi ve Müh. (İng.)", tur:"SAY", taban_puan:515.6, taban_sira:1800},
+      {ad:"Biyoloji ve Biyomühendislik (İng.)", tur:"SAY", taban_puan:502.3, taban_sira:3250}
+    ]
+  },
+  "Bilkent Üniversitesi": {
+    bolumler: [
+      {ad:"Bilgisayar Mühendisliği (İng.)", tur:"SAY", taban_puan:517.4, taban_sira:1680},
+      {ad:"Elektrik-Elektronik Müh. (İng.)", tur:"SAY", taban_puan:514.8, taban_sira:1880},
+      {ad:"Makine Mühendisliği (İng.)", tur:"SAY", taban_puan:510.3, taban_sira:2200},
+      {ad:"Endüstri Mühendisliği (İng.)", tur:"SAY", taban_puan:512.6, taban_sira:2020},
+      {ad:"Matematik (İng.)", tur:"SAY", taban_puan:487.9, taban_sira:5100}
+    ]
+  },
+  "Karadeniz Teknik Üniversitesi": {
+    bolumler: [
+      {ad:"Tıp", tur:"SAY", taban_puan:506.8, taban_sira:2650},
+      {ad:"Bilgisayar Mühendisliği", tur:"SAY", taban_puan:475.4, taban_sira:7800},
+      {ad:"İnşaat Mühendisliği", tur:"SAY", taban_puan:464.7, taban_sira:11300}
+    ]
+  },
+  "Çukurova Üniversitesi": {
+    bolumler: [
+      {ad:"Tıp", tur:"SAY", taban_puan:503.5, taban_sira:3200},
+      {ad:"Eczacılık", tur:"SAY", taban_puan:484.1, taban_sira:5900},
+      {ad:"Bilgisayar Mühendisliği", tur:"SAY", taban_puan:469.3, taban_sira:9800}
+    ]
+  },
+  "Yıldız Teknik Üniversitesi": {
+    bolumler: [
+      {ad:"Bilgisayar Mühendisliği", tur:"SAY", taban_puan:491.7, taban_sira:4700},
+      {ad:"Elektrik-Elektronik Müh.", tur:"SAY", taban_puan:487.3, taban_sira:5300},
+      {ad:"Makine Mühendisliği", tur:"SAY", taban_puan:482.6, taban_sira:6300},
+      {ad:"İnşaat Mühendisliği", tur:"SAY", taban_puan:476.9, taban_sira:7500},
+      {ad:"Kimya Mühendisliği", tur:"SAY", taban_puan:473.2, taban_sira:8400}
+    ]
+  },
+  "Erciyes Üniversitesi": {
+    bolumler: [
+      {ad:"Tıp", tur:"SAY", taban_puan:501.8, taban_sira:3380},
+      {ad:"Eczacılık", tur:"SAY", taban_puan:481.2, taban_sira:6700},
+      {ad:"Diş Hekimliği", tur:"SAY", taban_puan:490.5, taban_sira:4820}
+    ]
+  },
+  "Akdeniz Üniversitesi": {
+    bolumler: [
+      {ad:"Tıp", tur:"SAY", taban_puan:498.6, taban_sira:3820},
+      {ad:"Eczacılık", tur:"SAY", taban_puan:478.4, taban_sira:7200}
+    ]
+  },
+  "Uludağ Üniversitesi": {
+    bolumler: [
+      {ad:"Tıp", tur:"SAY", taban_puan:505.2, taban_sira:2780},
+      {ad:"Eczacılık", tur:"SAY", taban_puan:485.9, taban_sira:5600},
+      {ad:"Bilgisayar Mühendisliği", tur:"SAY", taban_puan:473.6, taban_sira:8300}
+    ]
+  }
+};
+
+// ==================== STATE ====================
+let state = JSON.parse(localStorage.getItem('yks2026_state') || '{}');
+if(!state.konular) state.konular = {};
+if(!state.denemeler) state.denemeler = [];
+if(!state.sureler) state.sureler = [];
+if(!state.hedef) state.hedef = null;
+
+function saveState() { localStorage.setItem('yks2026_state', JSON.stringify(state)); }
+
+// ==================== COUNTDOWN ====================
+function updateCountdown() {
+  const target = new Date('2026-06-20T09:15:00');
+  const now = new Date();
+  const diff = target - now;
+  if(diff <= 0) {
+    document.getElementById('cd-gun').textContent='0';
+    document.getElementById('cd-saat').textContent='0';
+    document.getElementById('cd-dak').textContent='0';
+    document.getElementById('cd-sn').textContent='0';
+    return;
+  }
+  const d = Math.floor(diff/86400000);
+  const h = Math.floor((diff%86400000)/3600000);
+  const m = Math.floor((diff%3600000)/60000);
+  const s = Math.floor((diff%60000)/1000);
+  document.getElementById('cd-gun').textContent=d;
+  document.getElementById('cd-saat').textContent=String(h).padStart(2,'0');
+  document.getElementById('cd-dak').textContent=String(m).padStart(2,'0');
+  document.getElementById('cd-sn').textContent=String(s).padStart(2,'0');
+}
+setInterval(updateCountdown, 1000);
+updateCountdown();
+
+// ==================== NAV ====================
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.navbtn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('sec-'+id).classList.add('active');
+  event.target.classList.add('active');
+  if(id==='dashboard') renderDashboard();
+  if(id==='konular') renderKonular();
+  if(id==='deneme') renderDenemeList();
+  if(id==='sure') renderSure();
+  if(id==='motivasyon') renderMotivasyon();
+}
+
+// ==================== KONU TAKİP ====================
+function showKonuTab(tab) {
+  document.querySelectorAll('.subtab').forEach(b=>b.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById('konu-tyt').style.display = tab==='tyt'?'block':'none';
+  document.getElementById('konu-ayt').style.display = tab==='ayt'?'block':'none';
+}
+
+function renderKonular() {
+  renderKonuGroup('tyt', TOPICS.tyt);
+  renderKonuGroup('ayt', TOPICS.ayt);
+}
+
+function renderKonuGroup(type, dersler) {
+  const container = document.getElementById('konu-'+type);
+  container.innerHTML = '';
+  dersler.forEach(ders => {
+    const total = ders.konular.length;
+    const done = ders.konular.filter(k => state.konular[ders.id+'_'+k]).length;
+    const pct = Math.round((done/total)*100);
+    const el = document.createElement('div');
+    el.className = 'ders-folder';
+    el.innerHTML = `
+      <div class="ders-header" onclick="toggleFolder(this)">
+        <div class="ders-header-left">
+          <div class="ders-icon" style="background:${ders.color}22;color:${ders.color}">${ders.icon}</div>
+          <div>
+            <div class="ders-name">${ders.name}</div>
+            <div class="ders-progress">${done}/${total} konu tamamlandı</div>
+            <div class="prog-bar" style="width:160px;margin-top:4px;">
+              <div class="prog-fill" style="width:${pct}%;background:${ders.color}"></div>
+            </div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span style="color:${ders.color};font-weight:700;font-size:16px;">${pct}%</span>
+          <span class="ders-arrow">›</span>
+        </div>
+      </div>
+      <div class="ders-body">
+        <div class="alt-ders-section">
+          ${ders.konular.map(k => {
+            const key = ders.id+'_'+k;
+            const isDone = !!state.konular[key];
+            return `<div class="konu-item ${isDone?'done':''}" onclick="toggleKonu('${key}',this,${JSON.stringify(ders.id)})">
+              <div class="konu-check ${isDone?'done':''}"></div>
+              <div class="konu-text">${k}</div>
+            </div>`;
+          }).join('')}
+        </div>
+      </div>`;
+    container.appendChild(el);
+  });
+}
+
+function toggleFolder(header) {
+  header.parentElement.classList.toggle('open');
+}
+
+function toggleKonu(key, el, dersId) {
+  state.konular[key] = !state.konular[key];
+  saveState();
+  el.classList.toggle('done', state.konular[key]);
+  el.querySelector('.konu-check').classList.toggle('done', state.konular[key]);
+  // update parent progress
+  renderKonular();
+}
+
+// ==================== DENEME ====================
+const DENEME_LIMITS = {
+  'tyt-tr': 40, 'tyt-mat': 40, 'tyt-sos': 20, 'tyt-fen': 20,
+  'ayt-mat': 40, 'ayt-fiz': 14, 'ayt-kim': 13, 'ayt-bio': 13, 'ayt-geo': 10
+};
+
+function calcNet(field) {
+  const limit = DENEME_LIMITS[field];
+  const dEl = document.getElementById(field+'-d');
+  const yEl = document.getElementById(field+'-y');
+  let d = parseInt(dEl.value)||0;
+  let y = parseInt(yEl.value)||0;
+  if(d > limit){ d = limit; dEl.value = limit; }
+  if(y > limit){ y = limit; yEl.value = limit; }
+  if(d+y > limit){ y = limit-d; yEl.value = y; }
+  const net = d - y/4;
+  document.getElementById(field+'-net').textContent = net > 0 ? net.toFixed(2) : '0';
+}
+
+function getNetVal(field) {
+  const d = parseFloat(document.getElementById(field+'-d').value)||0;
+  const y = parseFloat(document.getElementById(field+'-y').value)||0;
+  return Math.max(0, d - y/4);
+}
+
+function saveDeneme() {
+  const ad = document.getElementById('dn-ad').value.trim();
+  const tarih = document.getElementById('dn-tarih').value || new Date().toISOString().split('T')[0];
+  if(!ad) { alert('Deneme adı giriniz.'); return; }
+  const deneme = {
+    id: Date.now(), ad, tarih,
+    nets: {
+      tyt_tr: getNetVal('tyt-tr'), tyt_mat: getNetVal('tyt-mat'),
+      tyt_sos: getNetVal('tyt-sos'), tyt_fen: getNetVal('tyt-fen'),
+      ayt_mat: getNetVal('ayt-mat'), ayt_fiz: getNetVal('ayt-fiz'),
+      ayt_kim: getNetVal('ayt-kim'), ayt_bio: getNetVal('ayt-bio'), ayt_geo: getNetVal('ayt-geo')
+    }
+  };
+  deneme.tyt_toplam = deneme.nets.tyt_tr + deneme.nets.tyt_mat + deneme.nets.tyt_sos + deneme.nets.tyt_fen;
+  deneme.ayt_toplam = deneme.nets.ayt_mat + deneme.nets.ayt_fiz + deneme.nets.ayt_kim + deneme.nets.ayt_bio + deneme.nets.ayt_geo;
+  state.denemeler.unshift(deneme);
+  saveState();
+  renderDenemeList();
+  // clear
+  ['dn-ad'].forEach(id=>document.getElementById(id).value='');
+  ['tyt-tr','tyt-mat','tyt-sos','tyt-fen','ayt-mat','ayt-fiz','ayt-kim','ayt-bio','ayt-geo'].forEach(f=>{
+    document.getElementById(f+'-d').value='';
+    document.getElementById(f+'-y').value='';
+    document.getElementById(f+'-net').textContent='—';
+  });
+}
+
+function deleteDeneme(id) {
+  state.denemeler = state.denemeler.filter(d=>d.id!==id);
+  saveState();
+  renderDenemeList();
+}
+
+function renderDenemeList() {
+  const c = document.getElementById('deneme-list-container');
+  if(!c) return;
+  if(state.denemeler.length===0){ c.innerHTML='<div style="color:var(--text3);font-size:13px;text-align:center;padding:20px;">Henüz deneme eklenmedi.</div>'; return; }
+  c.innerHTML = `<div class="card"><div class="card-title">Deneme Geçmişi (${state.denemeler.length})</div><div class="deneme-list">` +
+    state.denemeler.map(d=>`
+      <div class="deneme-item">
+        <div class="deneme-item-top">
+          <div>
+            <div class="deneme-item-name">${d.ad}</div>
+            <div class="deneme-item-date">📅 ${d.tarih}</div>
+          </div>
+          <button class="btn btn-danger btn-sm" onclick="deleteDeneme(${d.id})">Sil</button>
+        </div>
+        <div class="nets-display">
+          <div class="net-badge">TYT Toplam: <span>${d.tyt_toplam.toFixed(2)}</span></div>
+          <div class="net-badge">TR: <span>${d.nets.tyt_tr.toFixed(2)}</span></div>
+          <div class="net-badge">Mat: <span>${d.nets.tyt_mat.toFixed(2)}</span></div>
+          <div class="net-badge">Sos: <span>${d.nets.tyt_sos.toFixed(2)}</span></div>
+          <div class="net-badge">Fen: <span>${d.nets.tyt_fen.toFixed(2)}</span></div>
+          ${d.ayt_toplam > 0 ? `
+          <div class="net-badge" style="border-color:#3a2a5e;">AYT Toplam: <span style="color:#c060f0">${d.ayt_toplam.toFixed(2)}</span></div>
+          <div class="net-badge">AYT Mat: <span>${d.nets.ayt_mat.toFixed(2)}</span></div>
+          <div class="net-badge">Fiz: <span>${d.nets.ayt_fiz.toFixed(2)}</span></div>
+          <div class="net-badge">Kim: <span>${d.nets.ayt_kim.toFixed(2)}</span></div>
+          <div class="net-badge">Bio: <span>${d.nets.ayt_bio.toFixed(2)}</span></div>
+          <div class="net-badge">Geo: <span>${d.nets.ayt_geo.toFixed(2)}</span></div>
+          ` : ''}
+        </div>
+      </div>`).join('') + '</div></div>';
+}
+
+// ==================== AI TAVSİYE ====================
+async function getAIAdvice() {
+  const btn = document.querySelector('.ai-box .btn-primary');
+  const resp = document.getElementById('ai-response');
+  resp.style.display='block';
+  resp.innerHTML='<span class="ai-loading">🤖 Analiz yapılıyor...</span>';
+  btn.disabled=true;
+
+  const lastDeneme = state.denemeler[0];
+  let prompt = '';
+  if(!lastDeneme) {
+    prompt = 'YKS 2026 sayısal bölüm öğrencisiyim. Henüz deneme çözmedim. Bana nasıl bir çalışma stratejisi önerirsin? TYT ve AYT Sayısal için başlangıç tavsiyesi ver.';
+  } else {
+    const n = lastDeneme.nets;
+    const totalKonu = Object.values(state.konular).filter(v=>v).length;
+    prompt = `YKS 2026 sayısal bölüm öğrencisiyim. Son deneme netlerim:
+TYT: Türkçe ${n.tyt_tr.toFixed(2)}/40, Matematik ${n.tyt_mat.toFixed(2)}/40, Sosyal ${n.tyt_sos.toFixed(2)}/20, Fen ${n.tyt_fen.toFixed(2)}/20
+AYT: Matematik ${n.ayt_mat.toFixed(2)}/40, Fizik ${n.ayt_fiz.toFixed(2)}/14, Kimya ${n.ayt_kim.toFixed(2)}/13, Biyoloji ${n.ayt_bio.toFixed(2)}/13, Geometri ${n.ayt_geo.toFixed(2)}/10
+Toplam tamamladığım konu: ${totalKonu}
+${state.hedef ? `Hedefim: ${state.hedef.uni} - ${state.hedef.bolum} (2025 taban sıra: ${state.hedef.sira?.toLocaleString('tr-TR')})` : ''}
+Bu netlere göre hangi derslere odaklanmalıyım? Güçlü ve zayıf yönlerimi analiz et. Kısa ve öz, pratik tavsiyeler ver. Türkçe cevap ver.`;
+  }
+
+  try {
+    const response = await fetch("https://api.anthropic.com/v1/messages", {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({
+        model:"claude-sonnet-4-20250514",
+        max_tokens:1000,
+        messages:[{role:"user",content:prompt}]
+      })
+    });
+    const data = await response.json();
+    const text = data.content?.map(i=>i.text||'').join('') || 'Yanıt alınamadı.';
+    resp.textContent = text;
+  } catch(e) {
+    resp.textContent = 'Bağlantı hatası. Lütfen tekrar deneyin.';
+  }
+  btn.disabled=false;
+}
+
+async function getMotivasyon() {
+  const btn = document.getElementById('sec-motivasyon').querySelector('.ai-box .btn-primary');
+  const resp = document.getElementById('mot-ai-response');
+  resp.style.display='block';
+  resp.innerHTML='<span class="ai-loading">✨ Hazırlanıyor...</span>';
+  btn.disabled=true;
+  const totalKonu = Object.values(state.konular).filter(v=>v).length;
+  const totalDeneme = state.denemeler.length;
+  let prompt = `YKS 2026'ya hazırlanan bir öğrenciyim. Şu ana kadar ${totalKonu} konu tamamladım ve ${totalDeneme} deneme çözdüm. Sınav tarihi 20 Haziran 2026.${state.hedef?` Hedefim: ${state.hedef.uni} - ${state.hedef.bolum}.`:''} Bana kişisel, içten ve motivasyonu yüksek tutacak bir mesaj yaz. Türkçe, samimi ve güçlü olsun.`;
+  try {
+    const response = await fetch("https://api.anthropic.com/v1/messages", {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({
+        model:"claude-sonnet-4-20250514",
+        max_tokens:600,
+        messages:[{role:"user",content:prompt}]
+      })
+    });
+    const data = await response.json();
+    resp.textContent = data.content?.map(i=>i.text||'').join('') || 'Yanıt alınamadı.';
+  } catch(e) { resp.textContent = 'Bağlantı hatası.'; }
+  btn.disabled=false;
+}
+
+// ==================== ÇALIŞMA SÜRESİ ====================
+const DERS_COLORS = {
+  'TYT Türkçe':'#3b82f6','TYT Matematik':'#f59e0b','TYT Sosyal Bilimler':'#10b981','TYT Fen Bilimleri':'#8b5cf6',
+  'AYT Matematik':'#f59e0b','AYT Geometri':'#ec4899','AYT Fizik':'#06b6d4','AYT Kimya':'#22c55e','AYT Biyoloji':'#a3e635'
+};
+
+function addSure() {
+  const ders = document.getElementById('sure-ders').value;
+  const saat = parseInt(document.getElementById('sure-saat').value)||0;
+  const dak = parseInt(document.getElementById('sure-dak').value)||0;
+  const not = document.getElementById('sure-not').value.trim();
+  if(!ders) { alert('Ders seçiniz.'); return; }
+  if(saat===0 && dak===0) { alert('Süre giriniz.'); return; }
+  const today = new Date().toISOString().split('T')[0];
+  state.sureler.push({id:Date.now(), ders, saat, dak, not, tarih:today});
+  saveState();
+  document.getElementById('sure-ders').value='';
+  document.getElementById('sure-saat').value='';
+  document.getElementById('sure-dak').value='';
+  document.getElementById('sure-not').value='';
+  renderSure();
+}
+
+function deleteSure(id) {
+  state.sureler = state.sureler.filter(s=>s.id!==id);
+  saveState();
+  renderSure();
+}
+
+function renderSure() {
+  const today = new Date().toISOString().split('T')[0];
+  const todayItems = state.sureler.filter(s=>s.tarih===today);
+  const totalMins = todayItems.reduce((a,s)=>a+s.saat*60+s.dak, 0);
+  const th = Math.floor(totalMins/60), tm = totalMins%60;
+  document.getElementById('daily-total-text').textContent = `${th} saat ${tm} dk`;
+
+  const list = document.getElementById('sure-list');
+  if(state.sureler.length===0){ list.innerHTML='<div style="color:var(--text3);font-size:13px;padding:10px 0;">Henüz çalışma eklenmedi.</div>'; }
+  else {
+    list.innerHTML = state.sureler.slice().reverse().map(s=>`
+      <div class="sure-item">
+        <div class="sure-item-left">
+          <span class="sure-ders-tag" style="background:${(DERS_COLORS[s.ders]||'#888')}22;color:${DERS_COLORS[s.ders]||'#888'}">${s.ders}</span>
+          <span class="sure-time">${s.saat}s ${s.dak}dk${s.not?' — '+s.not:''}</span>
+          <span style="font-size:11px;color:var(--text3);">${s.tarih}</span>
+        </div>
+        <button class="btn btn-outline btn-sm" onclick="deleteSure(${s.id})">×</button>
+      </div>`).join('');
+  }
+
+  // haftalık özet
+  const ozet = document.getElementById('haftalik-ozet');
+  const dersMap = {};
+  state.sureler.forEach(s=>{
+    if(!dersMap[s.ders]) dersMap[s.ders]=0;
+    dersMap[s.ders] += s.saat*60+s.dak;
+  });
+  if(Object.keys(dersMap).length===0){ ozet.textContent='Henüz veri yok.'; return; }
+  ozet.innerHTML = Object.entries(dersMap).sort((a,b)=>b[1]-a[1]).map(([d,mins])=>{
+    const h=Math.floor(mins/60),m=mins%60;
+    return `<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);">
+      <span style="color:${DERS_COLORS[d]||'#888'}">${d}</span>
+      <span style="font-weight:600;">${h}s ${m}dk</span>
+    </div>`;
+  }).join('');
+}
+
+// ==================== ÜNİVERSİTE ====================
+let selectedUni = null;
+let selectedBolum = null;
+
+function filterUni() {
+  const q = document.getElementById('uni-search').value.toLowerCase();
+  const dd = document.getElementById('uni-dropdown');
+  if(q.length === 0){ dd.classList.remove('open'); return; }
+  const matches = Object.keys(UNI_DATA).filter(u=>u.toLowerCase().includes(q));
+  if(matches.length===0){ dd.innerHTML='<div class="uni-option" style="color:var(--text3);">Sonuç bulunamadı</div>'; dd.classList.add('open'); return; }
+  dd.innerHTML = matches.map(u=>`<div class="uni-option" onclick="selectUni('${u.replace(/'/g,"\\'")}')">${u}</div>`).join('');
+  dd.classList.add('open');
+}
+
+function closeDropdown() { document.getElementById('uni-dropdown').classList.remove('open'); }
+
+function selectUni(uni) {
+  selectedUni = uni;
+  selectedBolum = null;
+  document.getElementById('uni-search').value = uni;
+  document.getElementById('selected-uni-label').textContent = '✓ '+uni+' seçildi';
+  document.getElementById('uni-dropdown').classList.remove('open');
+  renderBolumler(uni);
+}
+
+function renderBolumler(uni) {
+  const box = document.getElementById('bolum-card-box');
+  const list = document.getElementById('bolum-list');
+  const title = document.getElementById('uni-bolum-title');
+  title.textContent = uni;
+  box.style.display='block';
+  const bolumler = UNI_DATA[uni]?.bolumler || [];
+  list.innerHTML = bolumler.map((b,i)=>`
+    <div class="bolum-card" onclick="selectBolum(${i},'${uni.replace(/'/g,"\\'")}')">
+      <div class="bname">${b.ad}</div>
+      <div class="bdetail">Puan Türü: ${b.tur} &nbsp;|&nbsp; Taban Puan: ${b.taban_puan}</div>
+      <div class="bdetail">2025 Taban Sıra: <span class="bsira">${b.taban_sira.toLocaleString('tr-TR')}</span></div>
+    </div>`).join('');
+  document.getElementById('save-hedef-btn').style.display='none';
+}
+
+function selectBolum(idx, uni) {
+  document.querySelectorAll('.bolum-card').forEach(c=>c.classList.remove('selected'));
+  document.querySelectorAll('.bolum-card')[idx]?.classList.add('selected');
+  selectedBolum = UNI_DATA[uni]?.bolumler[idx];
+  document.getElementById('save-hedef-btn').style.display='inline-block';
+}
+
+function saveHedef() {
+  if(!selectedUni || !selectedBolum) return;
+  state.hedef = { uni:selectedUni, bolum:selectedBolum.ad, taban_puan:selectedBolum.taban_puan, sira:selectedBolum.taban_sira, tur:selectedBolum.tur };
+  saveState();
+  showHedefSaved();
+}
+
+function showHedefSaved() {
+  if(!state.hedef) return;
+  document.getElementById('hs-uni').textContent = state.hedef.uni;
+  document.getElementById('hs-bolum').textContent = state.hedef.bolum;
+  document.getElementById('hs-sira').textContent = `2025 Taban Sırası: ${state.hedef.sira?.toLocaleString('tr-TR')} | Taban Puan: ${state.hedef.taban_puan}`;
+  document.getElementById('hedef-saved-box').style.display='block';
+  document.getElementById('hedef-form-box').style.display='none';
+}
+
+function clearHedef() {
+  state.hedef = null;
+  saveState();
+  selectedUni = null;
+  selectedBolum = null;
+  document.getElementById('hedef-saved-box').style.display='none';
+  document.getElementById('hedef-form-box').style.display='block';
+  document.getElementById('uni-search').value='';
+  document.getElementById('selected-uni-label').textContent='';
+  document.getElementById('bolum-card-box').style.display='none';
+}
+
+// ==================== DASHBOARD ====================
+function renderDashboard() {
+  // konu
+  const koContainer = document.getElementById('db-konu-stats');
+  let koHtml = '';
+  [...TOPICS.tyt, ...TOPICS.ayt].forEach(ders=>{
+    const total = ders.konular.length;
+    const done = ders.konular.filter(k=>state.konular[ders.id+'_'+k]).length;
+    const pct = Math.round((done/total)*100);
+    koHtml += `<div style="display:flex;justify-content:space-between;align-items:center;padding:4px 0;">
+      <span style="font-size:12px;color:var(--text2);">${ders.icon} ${ders.name}</span>
+      <span style="font-size:12px;font-weight:600;color:${ders.color}">${pct}%</span>
+    </div>
+    <div class="prog-bar"><div class="prog-fill" style="width:${pct}%;background:${ders.color}"></div></div>`;
+  });
+  koContainer.innerHTML = koHtml || '<span style="color:var(--text3);">Konu başlatılmadı.</span>';
+
+  // deneme
+  const dn = document.getElementById('db-deneme-stats');
+  if(state.denemeler.length>0) {
+    const last = state.denemeler[0];
+    dn.innerHTML = `<div style="font-size:11px;color:var(--text3);">Son: ${last.ad}</div>
+    <div style="margin-top:6px;"><span style="color:var(--accent);font-size:20px;font-weight:700;">${last.tyt_toplam.toFixed(1)}</span><span style="color:var(--text3);font-size:11px;"> TYT toplam net</span></div>
+    ${last.ayt_toplam>0?`<div><span style="color:#c060f0;font-size:18px;font-weight:700;">${last.ayt_toplam.toFixed(1)}</span><span style="color:var(--text3);font-size:11px;"> AYT sayısal net</span></div>`:''}
+    <div style="font-size:11px;color:var(--text3);margin-top:4px;">Toplam ${state.denemeler.length} deneme</div>`;
+  } else { dn.textContent='Henüz deneme eklenmedi.'; }
+
+  // süre
+  const today = new Date().toISOString().split('T')[0];
+  const todayItems = state.sureler.filter(s=>s.tarih===today);
+  const totalMins = todayItems.reduce((a,s)=>a+s.saat*60+s.dak,0);
+  const sr = document.getElementById('db-sure-stats');
+  if(totalMins>0) {
+    sr.innerHTML = `<div style="color:var(--accent);font-size:22px;font-weight:700;">${Math.floor(totalMins/60)}s ${totalMins%60}dk</div>
+    <div style="font-size:11px;color:var(--text3);margin-top:4px;">${todayItems.map(s=>`${s.ders}`).join(', ')}</div>`;
+  } else { sr.textContent = 'Bugün çalışma eklenmedi.'; }
+
+  // hedef
+  const hd = document.getElementById('db-hedef');
+  if(state.hedef) {
+    hd.innerHTML = `<div style="color:var(--accent);font-weight:700;font-size:16px;">${state.hedef.uni}</div>
+    <div style="font-size:14px;margin-top:2px;">${state.hedef.bolum}</div>
+    <div style="font-size:12px;color:var(--accent4);margin-top:4px;">2025 Taban Sırası: ${state.hedef.sira?.toLocaleString('tr-TR')}</div>`;
+  } else { hd.textContent='Hedef üniversite seçilmedi.'; }
+
+  // ai dashboard
+  if(state.denemeler.length>0) {
+    document.getElementById('ai-dashboard-box').style.display='block';
+    const aiBox = document.getElementById('db-ai-text');
+    if(!aiBox.textContent) getDashboardAI();
+  }
+}
+
+async function getDashboardAI() {
+  const el = document.getElementById('db-ai-text');
+  el.innerHTML = '<span class="ai-loading">Analiz hazırlanıyor...</span>';
+  const last = state.denemeler[0];
+  if(!last) return;
+  const n = last.nets;
+  const prompt = `YKS 2026 sayısal öğrencisinin son deneme netleri: TYT TR:${n.tyt_tr.toFixed(1)}, Mat:${n.tyt_mat.toFixed(1)}, Sos:${n.tyt_sos.toFixed(1)}, Fen:${n.tyt_fen.toFixed(1)} | AYT Mat:${n.ayt_mat.toFixed(1)}, Fiz:${n.ayt_fiz.toFixed(1)}, Kim:${n.ayt_kim.toFixed(1)}, Bio:${n.ayt_bio.toFixed(1)}, Geo:${n.ayt_geo.toFixed(1)}. 2 cümleyle bugün ne çalışmalı söyle.`;
+  try {
+    const r = await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:300,messages:[{role:"user",content:prompt}]})});
+    const d = await r.json();
+    el.textContent = d.content?.map(i=>i.text||'').join('') || '';
+  } catch(e) { el.textContent=''; }
+}
+
+// ==================== MOTİVASYON ====================
+function newQuote() {
+  const q = MOTIVASYON_SOZLERI[Math.floor(Math.random()*MOTIVASYON_SOZLERI.length)];
+  document.getElementById('mot-quote').textContent = '"'+q.q+'"';
+  document.getElementById('mot-author').textContent = q.a ? '— '+q.a : '';
+}
+
+function renderMotivasyon() {
+  newQuote();
+  const target = new Date('2026-06-20T09:15:00');
+  const now = new Date();
+  const diff = target - now;
+  const days = Math.floor(diff/86400000);
+  const weeks = Math.floor(days/7);
+  const months = Math.floor(days/30);
+  document.getElementById('mot-countdown').innerHTML = `
+    <div>📅 <b>${days}</b> gün kaldı</div>
+    <div>📆 <b>${weeks}</b> hafta kaldı</div>
+    <div>🗓️ <b>${months}</b> ay kaldı</div>
+    <div style="margin-top:8px;color:var(--accent4);">Sınav: <b>20-21 Haziran 2026</b></div>
+    <div style="color:var(--text3);font-size:12px;margin-top:4px;">TYT: 20 Haziran 2026 | AYT: 21 Haziran 2026</div>`;
+  const tips = document.getElementById('mot-tips');
+  const shuffled = [...GUNLUK_IPUCLARI].sort(()=>Math.random()-.5).slice(0,5);
+  tips.innerHTML = shuffled.map(t=>`<div class="tip-row">💡 ${t}</div>`).join('');
+}
+
+// ==================== INIT ====================
+function init() {
+  renderKonular();
+  renderDenemeList();
+  renderSure();
+  if(state.hedef) showHedefSaved();
+  renderDashboard();
+  newQuote();
+}
+init();
+</script>
+</body>
+</html>
